@@ -31,3 +31,6 @@ six==1.16.0
 typing==3.7.4.3
 Werkzeug==3.0.3
 yarl==1.9.4
+discord.py
+Flask
+python-dotenv
