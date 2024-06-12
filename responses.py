@@ -15,7 +15,7 @@ firebase = pyrebase.initialize_app(firebase_config)
 
 db = firebase.database()
 
-print(db.child("N3BgYDG1Bpfk1aqeiMp6BBqbFw13").child("Tasks").get())
+print(db.child("N3BgYDG1Bpfk1aqeiMp6BBqbFw13").child("Tasks").get().val())
 
 def get_response(inp: str) -> str:
     return "Hello there"
