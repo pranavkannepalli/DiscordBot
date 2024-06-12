@@ -48,5 +48,4 @@ async def on_message(message: Message) -> None:
 def main() -> None:
     client.run(token=TOKEN)
 
-if __name__ == '__main__':
-    main()
+main()
