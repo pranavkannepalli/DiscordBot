@@ -22,12 +22,33 @@ def authwithtoken_response(server:str, channel: str, token: str) -> str:
     except Exception as e:
         return "Failed"
     
+
+def todosString(todos: list[dict]) -> str:
+    outputString = f""
+    for todo in todos:
+        if todo != None and not todo["isDone"]:
+            todoString: str = str(todo["id"]) + ") " + todo["description"]
+            if("date" in todo.keys()):
+                todoString += " Date: " + str(todo["date"])
+            if("tag" in todo.keys() and todo["tag"] != "Untagged"):
+                todoString += " Tag: " + str(todo["tag"])
+            todoString += "\n"
+            outputString += todoString
+
+    return outputString
+
+
 def gettodos_response(server:str, channel:str) -> str:
     try:
         group = db.child('discord_tokens').child(server).child(channel).get().val()
-        print(group)
         if(group):
-            return "Succeeded"
-        return "Failed"
+            todos = db.child(group).child("Tasks").get().val()
+            if(todos):
+                return todosString(todos)
+            else:
+                return "The group that you are requesting for doesn't exist or is corrupted."
+        else:
+            return "You haven't authenticated for this app yet. Use /authwithtoken and supply a valid group name"
     except Exception as e:
-        return "Failed"
+        print(e)
+        return "Huh, that's weird. Try again later when we fix this bug."
