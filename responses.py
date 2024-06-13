@@ -15,7 +15,19 @@ firebase = pyrebase.initialize_app(firebase_config)
 
 db = firebase.database()
 
-print(db.child("N3BgYDG1Bpfk1aqeiMp6BBqbFw13").child("Tasks").get().val())
-
-def get_response(inp: str) -> str:
-    return "Hello there"
+def authwithtoken_response(server:str, channel: str, token: str) -> str:
+    try :
+        db.child('discord_tokens').child(server).child(channel).set(token)
+        return f"The given token is now associated with the channel: {token}"
+    except Exception as e:
+        return "Failed"
+    
+def gettodos_response(server:str, channel:str) -> str:
+    try:
+        group = db.child('discord_tokens').child(server).child(channel).get().val()
+        print(group)
+        if(group):
+            return "Succeeded"
+        return "Failed"
+    except Exception as e:
+        return "Failed"
