@@ -1,3 +1,4 @@
+from typing import OrderedDict
 import pyrebase
 
 firebase_config:dict[str, str] = {
@@ -15,6 +16,7 @@ firebase = pyrebase.initialize_app(firebase_config)
 
 db = firebase.database()
 
+# Initial Auth
 def authwithtoken_response(server:str, channel: str, token: str) -> str:
     try :
         db.child('discord_tokens').child(server).child(channel).set(token)
@@ -23,9 +25,10 @@ def authwithtoken_response(server:str, channel: str, token: str) -> str:
         return "Failed"
     
 
-def todosString(todos: list[dict]) -> str:
+# Get Todos
+def todosString(todos: OrderedDict) -> str:
     outputString = f""
-    for todo in todos:
+    for todo in todos.values():
         if todo != None and not todo["isDone"]:
             todoString: str = str(todo["id"]) + ") " + todo["description"]
             if("date" in todo.keys()):
@@ -46,9 +49,26 @@ def gettodos_response(server:str, channel:str) -> str:
             if(todos):
                 return todosString(todos)
             else:
-                return "The group that you are requesting for doesn't exist or is corrupted."
+                return "The group that you are requesting for doesn't exist, has no todos, or is corrupted."
         else:
             return "You haven't authenticated for this app yet. Use /authwithtoken and supply a valid group name"
     except Exception as e:
         print(e)
         return "Huh, that's weird. Try again later when we fix this bug."
+    
+# Edit Todos
+
+# Add Todos
+
+# Remove Todos
+def remove_todo(server: str, channel: str, id: int) -> str:
+    try:
+        group = db.child('discord_tokens').child(server).child(channel).get().val()
+        if(group):
+            db.child(group).child("Tasks").child(id).remove()
+            return f"Removed todo with id {id}"
+        else:
+            return "You haven't authenticated for this app yet. Use /authwithtoken and supply a valid group name"
+    except Exception as e:
+        print(e)
+        return "Huh, that's weird. Either the todo doesn't exist or we're doing something wrong."

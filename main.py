@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from discord import Intents, Client, Message, app_commands, Interaction
 import webserver
-from responses import authwithtoken_response, gettodos_response
+from responses import authwithtoken_response, gettodos_response, remove_todo
 
 load_dotenv()
 
@@ -26,7 +26,6 @@ async def send_message(message: Message, user_message: str) -> None:
     
     try:
         response: str = "hello there!"
-        print(response)
         await message.author.send(response) if is_private else await message.channel.send(response)
     except BaseException as e:
         print(e)
@@ -45,6 +44,12 @@ async def authwithtoken(interaction:Interaction, token: str) -> None:
 @tree.command(name = "todos", description="Gets your todos from firebase")
 async def todos(interaction:Interaction) -> None:
     response = gettodos_response(interaction.guild_id, interaction.channel)
+    await interaction.response.send_message(response)
+
+@tree.command(name = "removetodo", description="Starts your process by associating this channel with a unique token")
+@app_commands.describe(id="The numeric id associated with the todo you are trying to delete")
+async def removetodo(interaction:Interaction, id: int) -> None:
+    response = remove_todo(interaction.guild_id, interaction.channel, id)
     await interaction.response.send_message(response)
 
 def main() -> None:
