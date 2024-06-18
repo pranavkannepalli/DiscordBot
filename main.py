@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from discord import Intents, Client, Message, app_commands, Interaction
 import webserver
-from responses import authwithtoken_response, gettodos_response, remove_todo
+from responses import authwithtoken_response, gettodos_response, remove_todo, numtodos_response, add_todo
 
 load_dotenv()
 
@@ -50,6 +50,17 @@ async def todos(interaction:Interaction) -> None:
 @app_commands.describe(id="The numeric id associated with the todo you are trying to delete")
 async def removetodo(interaction:Interaction, id: int) -> None:
     response = remove_todo(interaction.guild_id, interaction.channel, id)
+    await interaction.response.send_message(response)
+
+@tree.command(name="numtodos", description="Gets the number of todos ever created in this group.")
+async def numtodos(interaction:Interaction) -> None:
+    response = numtodos_response(interaction.guild_id, interaction.channel)
+    await interaction.response.send_message(response)
+
+@tree.command(name="addtodo", description="Add a todo to the group.")
+@app_commands.describe(description="The name of the todo that you are trying to add.")
+async def addtodo(interaction: Interaction, description: str) -> None:
+    response = add_todo(interaction.guild_id, interaction.channel, interaction.user.display_name, description)
     await interaction.response.send_message(response)
 
 def main() -> None:
