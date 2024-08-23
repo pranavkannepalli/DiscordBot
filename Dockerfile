@@ -3,6 +3,9 @@ FROM python:3-slim
 
 EXPOSE 8080
 
+ARG DISCORD_TOKEN
+
+
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
 
