@@ -9,7 +9,9 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
+# Set Discord Token
 ENV DISCORD_TOKEN=${DISCORD_TOKEN}
+RUN echo ${DISCORD_TOKEN}
 
 # Install pip requirements
 COPY requirements.txt .
